@@ -1,6 +1,13 @@
 # Spring security voorbeeld
 Een inleiding
 
+## Wensen vanuit de frontend
+Als gebruiker wil ik graag:
+* Nieuwe gebruikers kunnen aanmaken
+* Kunnen inloggen met een bestaand account
+* De gegevens van een bestaand account kunnen wijzigen
+* Alle gebruikers kunnen opvragen, als ik een admin ben
+
 ## Inhoud
  * [Voorbereiding](#voorbereiding)
  * [Korte uitleg](#korte-uitleg)

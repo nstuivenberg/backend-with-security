@@ -5,7 +5,8 @@ Een inleiding
 Als gebruiker wil ik graag:
 * Nieuwe gebruikers kunnen aanmaken
 * Kunnen inloggen met een bestaand account
-* De gegevens van een bestaand account kunnen wijzigen
+* De gegevens van het huidige ingelogde account opvragen met alleen de accessToken
+* De gegevens van een bestaand account (die op dat moment ingelogd is) kunnen wijzigen
 * Alle gebruikers kunnen opvragen, als ik een admin ben
 
 ## Inhoud

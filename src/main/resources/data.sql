@@ -12,5 +12,4 @@ database te krijgen is via SQL statements in dit bestand.
 
  */
 INSERT INTO role(name) VALUES('ROLE_USER');
-INSERT INTO role(name) VALUES('ROLE_MODERATOR');
 INSERT INTO role(name) VALUES('ROLE_ADMIN');

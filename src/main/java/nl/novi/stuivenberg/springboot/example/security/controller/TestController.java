@@ -29,11 +29,6 @@ public class TestController {
         return testService.generateUserContent();
     }
 
-    @GetMapping("/mod")
-    public String moderatorAccess() {
-        return testService.generateModContent();
-    }
-
     @GetMapping("/admin")
     public String adminAccess() {
         return testService.generateAdminContent();

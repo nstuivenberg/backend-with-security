@@ -15,11 +15,6 @@ public class TestService {
         return "User Content.";
     }
 
-    @PreAuthorize("hasRole('MODERATOR')")
-    public String generateModContent() {
-        return "Moderator Board.";
-    }
-
     @PreAuthorize("hasRole('ADMIN')")
     public String generateAdminContent() {
         return "Admin Board.";

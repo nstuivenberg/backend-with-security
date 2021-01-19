@@ -149,6 +149,7 @@ Praat via Postman met de volgende link: `http://localhost:8080/api/auth/signin` 
     "password":"123456"
 }
 ```
+Bovenstaande werkt alleen wanneer je deze user hebt toegevoegd!
 
 #### Inloggen mod
 ```json
@@ -157,6 +158,7 @@ Praat via Postman met de volgende link: `http://localhost:8080/api/auth/signin` 
     "password":"123456"
 }
 ```
+Bovenstaande werkt alleen wanneer je deze user hebt toegevoegd!
 
 #### Inloggen admin
 ```json

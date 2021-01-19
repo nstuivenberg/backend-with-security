@@ -27,7 +27,7 @@ Als gebruiker wil ik graag:
     
 
 ### Gebruikersrollen
-Dit voorbeeld maakt gebruik van drie user-rollen. `user` & `admin`. Elke gebruiker kan 0 tot meerdere rollen 
+Dit voorbeeld maakt gebruik van twee user-rollen. `user` & `admin`. Elke gebruiker kan 0 tot meerdere rollen 
 hebben. Het is belangrijk om je te realiseren dat wanneer een gebruiker de `admin`-rol heeft dat deze dan niet
 automatisch de `user`-rol heeft. Er is geen mogelijkheid om de rol van de gebruiker aan te passen.
 
@@ -70,9 +70,6 @@ De back-end is op de volgende end-points te bereiken:
  4. `/api/test/user`
     GET-request
     * Alleen (ingelogd) gebruikers met de user-rol kunnen data uit deze API uitlezen.
- 5. `/api/test/mod`
-    GET-request
-     * Alleen (ingelogd) gebruikers met de mod-rol kunnen data uit deze API uitlezen.
  6. `/api/test/admin`
     GET-request
      * Alleen (ingelogd) gebruikers met de admin-rol kunnen data uit deze API uitlezen.
@@ -109,15 +106,6 @@ Praat via Postman met de volgende link: `https://polar-lake-14365.herokuapp.com/
     "role": ["user"]
 }
 ```
-#### Gebruiker met mod- en userrol aanmaken
-```json
-{
-    "username": "mod",
-    "email" : "mod@mod.com",
-    "password" : "123456",
-    "role": ["mod", "user"]
-}
-```
 #### Gebruiker met adminrol aanmaken
 ```json
 {
@@ -134,7 +122,7 @@ Praat via Postman met de volgende link: `https://polar-lake-14365.herokuapp.com/
     "username": "superadmin",
     "email" : "superadmin@admin.com",
     "password" : "123456",
-    "role": ["admin", "mod", "user"]
+    "role": ["admin", "user"]
 }
 ```
 

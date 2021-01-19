@@ -98,7 +98,7 @@ De back-end is op de volgende end-points te bereiken:
 Je kunt tegen de hierboven genoemde rest-points communiceren.
 
 ### Gebruiker aanmaken
-Praat via Postman met de volgende link: `http://localhost:8080/api/auth/signup` en geef de volgende JSON in de body mee:
+Praat via Postman met de volgende link: `https://polar-lake-14365.herokuapp.com/api/auth/signup` en geef de volgende JSON in de body mee:
 
 #### Gebruiker met userrol aanmaken
 ```json
@@ -141,7 +141,7 @@ Praat via Postman met de volgende link: `http://localhost:8080/api/auth/signup` 
 ### Inloggen
 Wanneer je inlogt geeft de backend-server een Json WebToken terug. Bewaar deze, want deze moet je meesturen.
 
-Praat via Postman met de volgende link: `http://localhost:8080/api/auth/signin` en geef de volgende JSON in de body mee:
+Praat via Postman met de volgende link: `https://polar-lake-14365.herokuapp.com/api/auth/signin` en geef de volgende JSON in de body mee:
 #### Inloggen user
 ```json
 {
@@ -151,14 +151,6 @@ Praat via Postman met de volgende link: `http://localhost:8080/api/auth/signin` 
 ```
 Bovenstaande werkt alleen wanneer je deze user hebt toegevoegd!
 
-#### Inloggen mod
-```json
-{
-    "username":"mod",
-    "password":"123456"
-}
-```
-Bovenstaande werkt alleen wanneer je deze user hebt toegevoegd!
 
 #### Inloggen admin
 ```json
@@ -205,9 +197,6 @@ De volgende resultaten worden teruggegevn door de server, wanneer het succesvol 
  2. `/api/test/user`
     * Alleen (ingelogd) gebruikers met de user-rol kunnen data uit deze API uitlezen.
     * `User Content.`
- 3. `/api/test/mod`
-     * Alleen (ingelogd) gebruikers met de mod-rol kunnen data uit deze API uitlezen.
-     `Moderator Board.`
- 4. `/api/test/admin`
+ 3. `/api/test/admin`
      * Alleen (ingelogd) gebruikers met de admin-rol kunnen data uit deze API uitlezen.
      `Admin Board.`

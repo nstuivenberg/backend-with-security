@@ -38,7 +38,14 @@ HTTP 401 Unauthorized
 In de situatie dat een admin zowel gebruikers-rechten heeft als admin-rechten, krijgt deze dus twee rollen toegewezen. 
 
 ## Rest endpoints
-Alle rest-endpoints draaien op deze server: https://polar-lake-14365.herokuapp.com. Dit is de basis-uri. Alle voorbeeld-data betreffende de endpoints zijn in JSON format weergegeven. 
+Alle rest-endpoints draaien op deze server: https://polar-lake-14365.herokuapp.com. Dit is de basis-uri. Alle voorbeeld-data betreffende de endpoints zijn in JSON format weergegeven. Wanneer er wordt vermeld dat er een token vereist is, betekent dit dat er een `Bearer` + `token` _header_ moet worden meegestuurd met het request:
+
+```json
+{
+   "Content-Type": "application/json",
+   "Authorization": "Bearer xxx.xxx.xxx",
+}
+```
 
 ### 0. Test
 `GET /api/test/all`
@@ -113,28 +120,12 @@ De response bevat een authorisatie-token (JWT) en alle gebruikersinformatie. Ond
 ### 3. Gebruiker opvragen
 `GET /api/user`
 
-Het opvragen van de gebruikersgegevens vereist een `Bearer` + `token` header:
-
-```json
-{
-   "Authorization": "Bearer xxx.xxx.xxx",
-}
-```
-
-De response bevat alle informatie over de gebruiker zoals beschreven bij registratie. 
+Het opvragen van de gebruikersgegevens vereist een **token**. De response bevat alle informatie over de gebruiker zoals beschreven bij registratie.
 
 ### 4. Gebruiker aanpassen
 `POST /api/user/update`
 
-Het is mogelijk om een gebruiker zijn eigen e-mail of wachtwoord aan te laten passen. Hiervoor moet, naast de informatie die wordt geüpdate, een `Bearer` + `token` header worden meegestuurd:
-
-```json
-{
-   "Authorization": "Bearer xxx.xxx.xxx",
-}
-```
-
-Om het e-mailadres aan te passen moet de volgende data worden meegestuurd:
+Het is mogelijk om een gebruiker zijn eigen e-mail of wachtwoord aan te laten passen. Dit vereist, naast de gegevens zelf, ook een **token**. Om het e-mailadres aan te passen moet de volgende data worden meegestuurd:
 
 ```json
 {
@@ -153,37 +144,15 @@ Om het wachtwoord aan te passen moet de volgende data worden meegestuurd:
 ### 5. Alle gebruikers opvragen [admin]
 `GET /api/admin/all`
 
-Dit rest-endpoint geeft een lijst van alle gebruikers terug, maar is alleen toegankelijk voor gebruikers met de admin-rol. Het opvragen van deze gegevens vereist een `Bearer` + `token` header:
-
-```json
-{
-   "Authorization": "Bearer xxx.xxx.xxx",
-}
-```
+Dit rest-endpoint geeft een lijst van alle gebruikers terug, maar is alleen toegankelijk voor gebruikers met de admin-rol. Het opvragen van deze gegevens vereist een **token**.
 
 ### 6. Beveiligd endpoint [user]
 `GET /api/test/user`
-Alleen gebruikers met een user-rol kunnen dit endpoint benaderen. Het opvragen van deze gegevens vereist een `Bearer` + `token` header:
-
-```json
-{
-   "Authorization": "Bearer xxx.xxx.xxx",
-}
-```
-
-De response bevat een enkele string: `"User Content."` (IETS MEESTUREN?)
+Alleen gebruikers met een user-rol kunnen dit endpoint benaderen. Het opvragen van deze gegevens vereist een **token**. De response bevat een enkele string: `"User Content."`
 
 ### 7. Beveiligd endpoint [admin]
 `GET /api/test/admin`
-Alleen gebruikers met een admin-rol kunnen dit endpoint benaderen. Het opvragen van deze gegevens vereist een `Bearer` + `token` header:
-
-```json
-{
-   "Authorization": "Bearer xxx.xxx.xxx",
-}
-```
-
-De response bevat een enkele string: `"Admin Board."` (IETS MEESTUREN?)
+Alleen gebruikers met een admin-rol kunnen dit endpoint benaderen. Het opvragen van deze gegevens vereist een **token**. De response bevat een enkele string: `"Admin Board."` (IETS MEESTUREN?)
 
 ## Restpoints benaderen in Postman
 Wanneer je een authorisation-token hebt ontvangen zal de backend bij alle beveiligde endpoints willen controleren wie de aanvrager is op basis van deze token. Dit zul je dus ook in Postman mee moeten geven.

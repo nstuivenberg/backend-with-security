@@ -1,5 +1,8 @@
-# Spring security voorbeeld
-Een inleiding
+# NOVI Spring security backend
+
+Deze backend is gemaakt door NOVI voor opleidingsdoeleinden. Studenten die een frontend opdracht maken en slechts gebruik willen maken van een backend voor het registeren en inloggen van gebruikers, kunnen gebruik maken van deze service. Het is niet mogelijk om andere informatie (naast `email`, `gebruikersnaam`, `wachtwoord` en `role`) op te slaan in deze database.
+
+
 
 ## Wensen vanuit de frontend
 Als gebruiker wil ik graag:
@@ -10,8 +13,7 @@ Als gebruiker wil ik graag:
 * Alle gebruikers kunnen opvragen, als ik een admin ben
 
 ## Inhoud
- * [Voorbereiding](#voorbereiding)
- * [Korte uitleg](#korte-uitleg)
+ * [Beschrijving](#beschrijving)
     * [Gebruikersrollen](#gebruikersrollen)
     * [Rest endpoints](#rest-endpoints)
  * [Hoe te gebruiken](#hoe-te-gebruiken)
@@ -23,137 +25,88 @@ Als gebruiker wil ik graag:
     * [De payload-package](#de-payload-package-dto)
     * [Repository package](#repository-package)
     
+## Beschrijving
 
-    
 
 ### Gebruikersrollen
-Dit voorbeeld maakt gebruik van twee user-rollen. `user` & `admin`. Elke gebruiker kan 0 tot meerdere rollen 
-hebben. Het is belangrijk om je te realiseren dat wanneer een gebruiker de `admin`-rol heeft dat deze dan niet
-automatisch de `user`-rol heeft. Er is geen mogelijkheid om de rol van de gebruiker aan te passen.
+Deze backend ondersteunt het gebruik van twee user-rollen:
+1. `user`
+2. `admin`
 
-###### Voorbeeld 
-Je maakt een gebruiker aan met de admin-rol. Je logt in met deze gebruiker. Als je met deze gebruiker wilt communiceren
-met een rest-endpoint dat alleen antwoord op gebruikers met de rol `user` dan geeft de applicatie de volgende error 
-terug:
+Elke gebruiker kan één of meerdere rollen hebben. Deze worden vastgesteld bij het _aanmaken_ van de gebruiker en kunnen daarna niet meer worden gewijzigd. Het is belangrijk om je te realiseren dat dat wanneer een gebruiker de `admin`-rol heeft dat deze dan niet _automatisch_ ook de `user`-rol heeft. 
+
+Dat zit zo: stel, je maakt een gebruiker aan met een admin-rol en logt daarmee in. Als je met dit account REST-endpoints wil benaderen die toegankelijk zijn voor gebruikers met een `user` rol, zou je wellicht denken dat een admin dan automatisch ook geautoriseerd is om deze te bekijken. Dat is echter niet zo. Als je met een account dat alléén een admin rol heeft probeert om een user-endpoint te benaderen, geeft de applicatie de volgende error:
+
 ```
 HTTP 401 Unauthorized
 ```
 
-### Rest endpoints.
-Alle rest-endpoints draaien op deze server: https://polar-lake-14365.herokuapp.com.
+In de situatie dat een admin zowel gebruikers-rechten heeft als admin-rechten, krijgt deze dus twee rollen toegewezen. 
 
-De back-end is op de volgende end-points te bereiken:
- 1. `/api/auth/signup`
-    POST-request
-    * Hier kun je de volgende JSON sturen om een gebruiker aan te maken.
-     ```json
-        {
-        "username": "user",
-        "email" : "user@user.com",
-        "password" : "123456",
-        "role": ["user"]
-        }
-     ```
-    Een e-mailadres moet altijd een e-mailadres zijn.
- 2. `/api/auth/signin`
-    POST-request
-    * Hier kun je login gegevens naar sturen. Je krijgt een Authorisatie-token terug.
-    ```json
-        {
-        "username":"user",
-        "password":"123456"
-        }
-    ```
- 3. `/api/test/all`
-    GET-request
-    * Iedereen kan data uit deze end-point uitlezen.
- 4. `/api/test/user`
-    GET-request
-    * Alleen (ingelogd) gebruikers met de user-rol kunnen data uit deze API uitlezen.
- 6. `/api/test/admin`
-    GET-request
-     * Alleen (ingelogd) gebruikers met de admin-rol kunnen data uit deze API uitlezen.
-7. `/api/user`
-    GET-request
-   * Dit rest-endpoint retourneert de gegevens van de gebruiker. Je moet de Bearer + token meesturen.
-8. `/api/user/update`
-    POST-request
-   * Dit rest-endpoint laat de gebruiker zijn e-mail en of wachtwoord aanpassen. Je moet de Bearer + token meesturen.
-    ```json
-    {
-        "email" : "sjaak@sjaak.nl",
-        "password" : "12",
-        "repeatedPassword" : "121212"
-    }
-    ```
-9. `/api/admin/all`
-   GET-request
-    * Dit rest-endpoint geeft een lijst van alle gebruikers terug. Deze is alleen toegankelijk voor gebruikers met de admin-rol.
-    
- 
-## Hoe te gebruiken met postman.
-Je kunt tegen de hierboven genoemde rest-points communiceren.
+### Rest endpoints
+Alle rest-endpoints draaien op deze server: https://polar-lake-14365.herokuapp.com. Dit is de basis-uri. Alle voorbeeld-data betreffende de endpoints zijn in JSON format weergegeven. 
 
-### Gebruiker aanmaken
-Praat via Postman met de volgende link: `https://polar-lake-14365.herokuapp.com/api/auth/signup` en geef de volgende JSON in de body mee:
+** 0. Test **
+`GET /api/test/all`
 
-#### Gebruiker met userrol aanmaken
+Dit endpoint is vrij toegankelijk en is niet afgeschermd. Het is daarom een handig endpoint om te testen of het verbinden met de backend werkt. De response bevat een enkele string: `"Public Content."`
+
+** 1. Registreren**
+`POST /api/auth/signup`
+
+Het aanmaken van een nieuwe gebruiker (met user-rol) vereist de volgende informatie:
+
 ```json
 {
-    "username": "user",
-    "email" : "user@user.com",
-    "password" : "123456",
-    "role": ["user"]
-}
-```
-#### Gebruiker met adminrol aanmaken
-```json
-{
-    "username": "admin",
-    "email" : "admin@admin.com",
-    "password" : "123456",
-    "role": ["admin"]
+   "username": "piet",
+   "email" : "piet@novi.nl",
+   "password" : "123456",
+   "role": ["user"]
 }
 ```
 
-#### Gebruiker met alledrie de rollen (niet veilig)
+Het aanmaken van een nieuwe gebruiker (met admin-rol) vereist de volengende informatie:
+
 ```json
 {
-    "username": "superadmin",
-    "email" : "superadmin@admin.com",
-    "password" : "123456",
-    "role": ["admin", "user"]
+   "username": "klaas",
+   "email" : "klaas@novi.nl",
+   "password" : "123456",
+   "role": ["admin"]
 }
 ```
 
-### Inloggen
-Wanneer je inlogt geeft de backend-server een Json WebToken terug. Bewaar deze, want deze moet je meesturen.
+Het is ook mogelijk een gebruiker aan te maken met twee rollen:
 
-Praat via Postman met de volgende link: `https://polar-lake-14365.herokuapp.com/api/auth/signin` en geef de volgende JSON in de body mee:
-#### Inloggen user
 ```json
 {
-    "username":"user",
-    "password":"123456"
+   "role": ["user", "admin"]
 }
 ```
-Bovenstaande werkt alleen wanneer je deze user hebt toegevoegd!
 
+De response bevat een succesmelding.
 
-#### Inloggen admin
+_Let op_: er mogen géén additionele keys worden meegestuurd. Het e-mailadres moet altijd een e-mailadres zijn (met @ erin) anders geeft de backend een foutmelding.
+
+** 2. Inloggen**
+`POST /api/auth/signup`
+
+Het inloggen van een bestaande gebruiker kan alleen als deze al geregistreerd is. Inloggen vereist de volgende informatie:
+
 ```json
 {
-    "username":"admin",
-    "password":"123456"
+   "username": "user",
+   "password" : "123456",
 }
 ```
-#### Resultaat
-De backend-server communiceert het volgende (soortgelijks) terug:
+
+De response bevat een authorisatie-token (JWT) en alle gebruikersinformatie. Onderstaand voorbeeld laat de repsonse zien na het inloggen van een gebruiker met een admin-rol:
+
 ```json
 {
     "id": 6,
     "username": "mod3",
-    "email": "mod3@mod.com",
+    "email": "mod3@novi.nl",
     "roles": [
         "ROLE_USER",
         "ROLE_MODERATOR"
@@ -163,28 +116,63 @@ De backend-server communiceert het volgende (soortgelijks) terug:
 }
 ```
 
-Wil je als ingelogde gebruiker nu tegen de beveiligde rest-points aanpraten dan moet je altijd `tokenType` en
-`accesstoken` meesturen. Zie volgend kopje.
+** 3. Gegevens opvragen **
+`GET /api/user`
 
-### Rest endpoint benaderen met access-token
-Op het moment dat bovenstaande is gelukt, dan heb je van de server een Bearer + access  token ontvangen. Spring security
-geeft deze uit en controleert op basis van die token wat de gebruiker wel of niet mag doen op de website. Dus willen we
-praten met één van de drie beveiligde rest endpoints, dan moeten we token type + access token meegeven in postman. Dat
-doen we zo:
+Het opvragen van de gebruikersgegevens vereist een `Bearer` + `token` header:
+
+```json
+{
+   "Authorization": "Bearer xxx.xxx.xxx",
+}
+```
+
+De response bevat alle informatie over de gebruiker zoals beschreven bij registratie. 
+
+** 4. Gegevens aanpassen **
+`POST /api/user/update`
+
+Het is mogelijk om een gebruiker zijn eigen e-mail of wachtwoord aan te laten passen. Hiervoor moet, naast de informatie die wordt geüpdate, een `Bearer` + `token` header worden meegestuurd:
+
+```json
+{
+   "Authorization": "Bearer xxx.xxx.xxx",
+}
+```
+
+Om het e-mailadres aan te passen moet de volgende data worden meegestuurd:
+
+```json
+{
+   "email" : "sjaak@sjaak.nl",
+}
+```
+
+Om het wachtwoord aan te passen moet de volgende data worden meegestuurd:
+
+```json
+{
+   "email" : "sjaak@sjaak.nl",
+}
+```
+
+
+** 5. Alle gebruikers [admin]**
+`GET /api/admin/all`
+
+Dit rest-endpoint geeft een lijst van alle gebruikers terug, maar is alleen toegankelijk voor gebruikers met de admin-rol. (IETS MEESTUREN?)
+
+** 6. Testen van de rollen [user] [admin]**
+`GET /api/test/user`
+Alleen gebruikers met een user-rol kunnen dit endpoint benaderen. De response bevat een enkele string: `"User Content."` (IETS MEESTUREN?)
+
+`GET /api/test/admin`
+Alleen gebruikers met een admin-rol kunnen dit endpoint benaderen. De response bevat een enkele string: `"Admin Board."` (IETS MEESTUREN?)
+
+### Restpoints benaderen in Postman
+Wanneer je een authorisation-token hebt ontvangen zal de backend bij alle beveiligde endpoints willen controleren wie de aanvrager is op basis van deze token. Dit zul je dus ook in Postman mee moeten geven.
 
 ![Plaatje postman met Authorization](img/auth_postman_example.png)
 
 Onder het kopje headers voeg je als `Key` `Authorization` toe. Daarin zet je `<TOKEN TYPE> <SPATIE> <ACCESSTOKEN>`. 
 Zonder de <>. Zie plaatje hierboven.
-
-De volgende resultaten worden teruggegevn door de server, wanneer het succesvol is:
-
- 1. `/api/test/all`
-    * Iedereen kan data uit deze end-point uitlezen.
-    * `Public Content.`
- 2. `/api/test/user`
-    * Alleen (ingelogd) gebruikers met de user-rol kunnen data uit deze API uitlezen.
-    * `User Content.`
- 3. `/api/test/admin`
-     * Alleen (ingelogd) gebruikers met de admin-rol kunnen data uit deze API uitlezen.
-     `Admin Board.`

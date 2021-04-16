@@ -1,34 +1,24 @@
 # NOVI Spring security backend
 
-Deze backend is gemaakt door NOVI voor opleidingsdoeleinden. Studenten die een frontend opdracht maken en slechts gebruik willen maken van een backend voor het registeren en inloggen van gebruikers, kunnen gebruik maken van deze service. Het is niet mogelijk om andere informatie (naast `email`, `gebruikersnaam`, `wachtwoord` en `role`) op te slaan in deze database.
-
-
-
-## Wensen vanuit de frontend
-Als gebruiker wil ik graag:
-* Nieuwe gebruikers kunnen aanmaken
-* Kunnen inloggen met een bestaand account
-* De gegevens van het huidige ingelogde account opvragen met alleen de accessToken
-* De gegevens van een bestaand account (die op dat moment ingelogd is) kunnen wijzigen
-* Alle gebruikers kunnen opvragen, als ik een admin ben
+## Beschrijving
+Deze backend is gemaakt door NOVI voor opleidingsdoeleinden. Studenten die een frontend opdracht maken en slechts gebruik willen maken van een backend voor het registeren en inloggen van gebruikers, kunnen gebruik maken van deze service. Het is niet mogelijk om andere informatie (naast `email`, `gebruikersnaam`, `wachtwoord` en `role`) op te slaan in deze database. De database met gebruikers wordt één keer in de drie maanden geleegd.
 
 ## Inhoud
- * [Beschrijving](#beschrijving)
-    * [Gebruikersrollen](#gebruikersrollen)
-    * [Rest endpoints](#rest-endpoints)
- * [Hoe te gebruiken](#hoe-te-gebruiken)
-    * [Gebruiker aanmaken](#gebruiker-aanmaken)
-    * [Inloggen](#inloggen)
-    * [Rest endpoint benaderen met access-token](#rest-endpoint-benaderen-met-access-token)
- * [Beveiligingslek](#beveiligingslek) 
- * [Uitleg code](#uitleg-code)
-    * [De payload-package](#de-payload-package-dto)
-    * [Repository package](#repository-package)
-    
-## Beschrijving
+* [Beschrijving](#beschrijving)
+* [Gebruikersrollen](#gebruikersrollen)
+* [Rest endpoints](#rest-endpoints)
+   * [Testen](#0.-test)
+   * [Registreren](#1.-registeren)
+   * [Inloggen](#0.-inloggen)
+   * [Gebruiker opvragen](#3.-gebruiker-opvragen)
+   * [Gebruiker aanpassen](#4.-gebruiker-aanpassen)
+   * [Alle gebruikers opvragen [admin]](#5.-alle-gebruikers-opvragen-[admin])
+   * [Beveiligd endpoint [user]](#6.-beveiligd-endpoint-[user])
+   * [Beveiligd endpoint [admin]](#7.-beveiligd-endpoint-[admin])
+* [Postman gebruiken](#rest-endpoint-benaderen-in-postman)
 
 
-### Gebruikersrollen
+## Gebruikersrollen
 Deze backend ondersteunt het gebruik van twee user-rollen:
 1. `user`
 2. `admin`
@@ -43,15 +33,15 @@ HTTP 401 Unauthorized
 
 In de situatie dat een admin zowel gebruikers-rechten heeft als admin-rechten, krijgt deze dus twee rollen toegewezen. 
 
-### Rest endpoints
+## Rest endpoints
 Alle rest-endpoints draaien op deze server: https://polar-lake-14365.herokuapp.com. Dit is de basis-uri. Alle voorbeeld-data betreffende de endpoints zijn in JSON format weergegeven. 
 
-** 0. Test **
+### 0. Test
 `GET /api/test/all`
 
 Dit endpoint is vrij toegankelijk en is niet afgeschermd. Het is daarom een handig endpoint om te testen of het verbinden met de backend werkt. De response bevat een enkele string: `"Public Content."`
 
-** 1. Registreren**
+### 1. Registreren
 `POST /api/auth/signup`
 
 Het aanmaken van een nieuwe gebruiker (met user-rol) vereist de volgende informatie:
@@ -88,7 +78,7 @@ De response bevat een succesmelding.
 
 _Let op_: er mogen géén additionele keys worden meegestuurd. Het e-mailadres moet altijd een e-mailadres zijn (met @ erin) anders geeft de backend een foutmelding.
 
-** 2. Inloggen**
+### 2. Inloggen
 `POST /api/auth/signup`
 
 Het inloggen van een bestaande gebruiker kan alleen als deze al geregistreerd is. Inloggen vereist de volgende informatie:
@@ -116,7 +106,7 @@ De response bevat een authorisatie-token (JWT) en alle gebruikersinformatie. Ond
 }
 ```
 
-** 3. Gegevens opvragen **
+### 3. Gebruiker opvragen
 `GET /api/user`
 
 Het opvragen van de gebruikersgegevens vereist een `Bearer` + `token` header:
@@ -129,7 +119,7 @@ Het opvragen van de gebruikersgegevens vereist een `Bearer` + `token` header:
 
 De response bevat alle informatie over de gebruiker zoals beschreven bij registratie. 
 
-** 4. Gegevens aanpassen **
+### 4. Gebruiker aanpassen
 `POST /api/user/update`
 
 Het is mogelijk om een gebruiker zijn eigen e-mail of wachtwoord aan te laten passen. Hiervoor moet, naast de informatie die wordt geüpdate, een `Bearer` + `token` header worden meegestuurd:
@@ -156,20 +146,20 @@ Om het wachtwoord aan te passen moet de volgende data worden meegestuurd:
 }
 ```
 
-
-** 5. Alle gebruikers [admin]**
+### 5. Alle gebruikers opvragen [admin]
 `GET /api/admin/all`
 
 Dit rest-endpoint geeft een lijst van alle gebruikers terug, maar is alleen toegankelijk voor gebruikers met de admin-rol. (IETS MEESTUREN?)
 
-** 6. Testen van de rollen [user] [admin]**
+### 6. Beveiligd endpoint [user]
 `GET /api/test/user`
 Alleen gebruikers met een user-rol kunnen dit endpoint benaderen. De response bevat een enkele string: `"User Content."` (IETS MEESTUREN?)
 
+### 7. Beveiligd endpoint [admin]
 `GET /api/test/admin`
 Alleen gebruikers met een admin-rol kunnen dit endpoint benaderen. De response bevat een enkele string: `"Admin Board."` (IETS MEESTUREN?)
 
-### Restpoints benaderen in Postman
+## Restpoints benaderen in Postman
 Wanneer je een authorisation-token hebt ontvangen zal de backend bij alle beveiligde endpoints willen controleren wie de aanvrager is op basis van deze token. Dit zul je dus ook in Postman mee moeten geven.
 
 ![Plaatje postman met Authorization](img/auth_postman_example.png)

@@ -153,15 +153,37 @@ Om het wachtwoord aan te passen moet de volgende data worden meegestuurd:
 ### 5. Alle gebruikers opvragen [admin]
 `GET /api/admin/all`
 
-Dit rest-endpoint geeft een lijst van alle gebruikers terug, maar is alleen toegankelijk voor gebruikers met de admin-rol. (IETS MEESTUREN?)
+Dit rest-endpoint geeft een lijst van alle gebruikers terug, maar is alleen toegankelijk voor gebruikers met de admin-rol. Het opvragen van deze gegevens vereist een `Bearer` + `token` header:
+
+```json
+{
+   "Authorization": "Bearer xxx.xxx.xxx",
+}
+```
 
 ### 6. Beveiligd endpoint [user]
 `GET /api/test/user`
-Alleen gebruikers met een user-rol kunnen dit endpoint benaderen. De response bevat een enkele string: `"User Content."` (IETS MEESTUREN?)
+Alleen gebruikers met een user-rol kunnen dit endpoint benaderen. Het opvragen van deze gegevens vereist een `Bearer` + `token` header:
+
+```json
+{
+   "Authorization": "Bearer xxx.xxx.xxx",
+}
+```
+
+De response bevat een enkele string: `"User Content."` (IETS MEESTUREN?)
 
 ### 7. Beveiligd endpoint [admin]
 `GET /api/test/admin`
-Alleen gebruikers met een admin-rol kunnen dit endpoint benaderen. De response bevat een enkele string: `"Admin Board."` (IETS MEESTUREN?)
+Alleen gebruikers met een admin-rol kunnen dit endpoint benaderen. Het opvragen van deze gegevens vereist een `Bearer` + `token` header:
+
+```json
+{
+   "Authorization": "Bearer xxx.xxx.xxx",
+}
+```
+
+De response bevat een enkele string: `"Admin Board."` (IETS MEESTUREN?)
 
 ## Restpoints benaderen in Postman
 Wanneer je een authorisation-token hebt ontvangen zal de backend bij alle beveiligde endpoints willen controleren wie de aanvrager is op basis van deze token. Dit zul je dus ook in Postman mee moeten geven.

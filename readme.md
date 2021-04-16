@@ -1,7 +1,11 @@
-# NOVI Spring security backend
+# NOVI Spring Security Backend
 
 ## Beschrijving
-Deze backend is gemaakt door NOVI voor opleidingsdoeleinden. Studenten die een frontend opdracht maken en slechts gebruik willen maken van een backend voor het registeren en inloggen van gebruikers, kunnen gebruik maken van deze service. Het is niet mogelijk om andere informatie (naast `email`, `gebruikersnaam`, `wachtwoord` en `role`) op te slaan in deze database. De database met gebruikers wordt één keer in de drie maanden geleegd.
+Deze backend is gebouwd door NOVI en mag alleen worden gebruikt voor opleidings-doeleinden.
+
+Wanneer studenten de Frontend leerlijn volgen en een backend nodig hebben voor hun eindopdracht, kunnen zij ervoor kiezen om de NOVI backend te gebruiken. Deze backend ondersteunt alleen het registeren, inloggen en aanpassen van gebuikers. Het is niet mogelijk om andere informatie (naast `email`, `gebruikersnaam`, `wachtwoord` en `role`) op te slaan in deze database. _Let op_: de database met gebruikers wordt één keer in de drie maanden geleegd.
+
+De backend draait op een [Heroku](https://www.heroku.com/) server. Deze server wordt automatisch inactief wanneer er een tijdje geen requests gemaakt worden. De **eerste** request die de server weer uit de 'slaapstand' haalt zal daarom maximaal 30 seconden op zich kunnen laten wachten. Daarna zal de responsetijd normaal zijn. Voer daarom altijd eerst een test-request uit.
 
 ## Inhoud
 * [Beschrijving](#beschrijving)
@@ -164,5 +168,4 @@ Wanneer je een authorisation-token hebt ontvangen zal de backend bij alle beveil
 
 ![Plaatje postman met Authorization](img/auth_postman_example.png)
 
-Onder het kopje headers voeg je als `Key` `Authorization` toe. Daarin zet je `<TOKEN TYPE> <SPATIE> <ACCESSTOKEN>`. 
-Zonder de <>. Zie plaatje hierboven.
+Onder het kopje headers voeg je als `Key` `Authorization` toe. Daarin zet je `<TOKEN TYPE> <SPATIE> <ACCESSTOKEN>` (zonder <>). 

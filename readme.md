@@ -112,7 +112,7 @@ De response bevat een authorisatie-token (JWT) en alle gebruikersinformatie. Ond
         "ROLE_USER",
         "ROLE_MODERATOR"
     ],
-    "accessToken": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJtb2QzIiwiaWF0IjoxNTk1NTg4MDk0LCJleHAiOjE1OTU2NzQ0OTR9.AgP4vCsgw5TMj_ePbPzMJXWWBNfFphJBHzAvTFyW9fzZ6UL-JO42pRq9puXAOlGh4hTijspAQAS-J8doHqADTA",
+    "accessToken": "eyJhJIUzUxMiJ9.eyJzdWICJleQ0OTR9.AgP4vCsgw5TMj_AQAS-J8doHqADTA",
     "tokenType": "Bearer"
 }
 ```

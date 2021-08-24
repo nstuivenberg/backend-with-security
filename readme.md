@@ -90,7 +90,7 @@ De response bevat een succesmelding.
 _Let op_: er mogen géén additionele keys worden meegestuurd. Het e-mailadres moet altijd een e-mailadres zijn (met @ erin) anders geeft de backend een foutmelding.
 
 ### 2. Inloggen
-`POST /api/auth/signup`
+`POST /api/auth/signin`
 
 Het inloggen van een bestaande gebruiker kan alleen als deze al geregistreerd is. Inloggen vereist de volgende informatie:
 

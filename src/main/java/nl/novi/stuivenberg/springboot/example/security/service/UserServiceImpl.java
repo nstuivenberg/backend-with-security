@@ -1,27 +1,21 @@
 package nl.novi.stuivenberg.springboot.example.security.service;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
 import nl.novi.stuivenberg.springboot.example.security.domain.User;
 import nl.novi.stuivenberg.springboot.example.security.payload.request.UpdateUserRequest;
 import nl.novi.stuivenberg.springboot.example.security.payload.response.MessageResponse;
 import nl.novi.stuivenberg.springboot.example.security.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.xml.bind.DatatypeConverter;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
-
-    @Value("${novi.sec.jwtSecret}")
-    private String jwtSecret;
-
-    private static final String PREFIX = "Bearer ";
 
     private UserRepository userRepository;
     private PasswordEncoder encoder;
@@ -38,15 +32,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseEntity<?> updateUserById(String token, UpdateUserRequest userRequest) {
-        if(token == null || token.isEmpty()) {
-            return ResponseEntity.badRequest().body(new MessageResponse("Invalid token"));
-        }
-        String username =  getUsernameFromToken(token);
+    public ResponseEntity<?> updateUserById(UpdateUserRequest userRequest) {
+        String username =  getUsernameFromToken();
 
-        if(userExists(username) && updateRequestIsValid(userRequest)) {
-            User updatedUser = findUserByUsername(username);
-            if(!userRequest.getPassword().isEmpty() && !userRequest.getRepeatedPassword().isEmpty()) {
+        Optional<User> userOptional = userRepository.findByUsername(username);
+
+        if(userOptional.isPresent()) {
+            User updatedUser = userOptional.get();
+            if(!userRequest.getPassword().isEmpty() && !userRequest.getRepeatedPassword().isEmpty()
+                    && isNewPasswordValid(userRequest)) {
                 updatedUser.setPassword(encoder.encode(userRequest.getPassword()));
             }
             if(userRequest.getEmail() != null && !userRequest.getEmail().isEmpty()) {
@@ -59,44 +53,27 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseEntity<?> findUserByToken(String token) {
-        String username = getUsernameFromToken(token);
+    public ResponseEntity<?> findUserByToken() {
+        String username = getUsernameFromToken();
 
-        if(userExists(username)) {
-            return ResponseEntity.ok(findUserByUsername(username));
+        Optional<User> userOptional = userRepository.findByUsername(username);
+
+        if(userOptional.isPresent()) {
+            return ResponseEntity.ok(userOptional.get());
         }
         return ResponseEntity.badRequest().body(new MessageResponse("User not found"));
     }
 
-    private String getUsernameFromToken(String token) {
-        String tokenWithoutBearer = removePrefix(token);
+    private String getUsernameFromToken() {
 
-        Claims claims = Jwts.parser()
-                .setSigningKey(DatatypeConverter.parseBase64Binary(jwtSecret))
-                .parseClaimsJws(tokenWithoutBearer).getBody();
-
-        return claims.getSubject();
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
+                .getPrincipal();
+        return userDetails.getUsername();
     }
 
-    private String removePrefix(String token) {
-        return token.replace(PREFIX, "");
+    private boolean isNewPasswordValid(UpdateUserRequest updateUserRequest) {
+        return updateUserRequest.getPassword().equals(updateUserRequest.getRepeatedPassword());
     }
-
-    private boolean userExists(String username) {
-        return userRepository.existsByUsername(username);
-    }
-
-    private boolean updateRequestIsValid(UpdateUserRequest updateUserRequest) {
-        if(updateUserRequest.getPassword().equals(updateUserRequest.getRepeatedPassword())) {
-            return true;
-        }
-        return false;
-    }
-
-    private User findUserByUsername(String username) {
-        return userRepository.findByUsername(username).get();
-    }
-
 
     @Autowired
     public void setUserRepository(UserRepository userRepository) {

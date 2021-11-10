@@ -12,6 +12,6 @@ import javax.validation.Valid;
 @Validated
 public interface UserService {
     ResponseEntity<?> getAllUsers();
-    ResponseEntity<?> updateUserById(String token,  @Valid UpdateUserRequest userRequest);
-    ResponseEntity<?> findUserByToken(String token);
+    ResponseEntity<?> updateUserById(@Valid UpdateUserRequest userRequest);
+    ResponseEntity<?> findUserByToken();
 }

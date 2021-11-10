@@ -10,11 +10,8 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Map;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -30,15 +27,14 @@ public class UserController {
 
     @PostMapping("/update")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> updateUser(@RequestHeader Map<String, String> headers,
-                                        @RequestBody UpdateUserRequest updateRequest) {
-        return userService.updateUserById(headers.get("authorization"), updateRequest);
+    public ResponseEntity<?> updateUser(@RequestBody UpdateUserRequest updateRequest) {
+        return userService.updateUserById(updateRequest);
     }
 
     @GetMapping("")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> findUserByToken(@RequestHeader Map<String, String> headers) {
-        return userService.findUserByToken(headers.get("authorization"));
+    public ResponseEntity<?> findUserByToken() {
+        return userService.findUserByToken();
     }
 
 }

@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 /**
  * Uitleg over CrossOrigin en CORS:
  * https://medium.com/@baphemot/understanding-cors-18ad6b478e2b
@@ -38,7 +40,7 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<MessageResponse> registerUser(@RequestBody SignupRequest signUpRequest) {
+    public ResponseEntity<MessageResponse> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
         return authorizationService.registerUser(signUpRequest);
     }
 

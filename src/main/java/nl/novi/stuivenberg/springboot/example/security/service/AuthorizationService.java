@@ -1,5 +1,8 @@
 package nl.novi.stuivenberg.springboot.example.security.service;
 
+import nl.novi.stuivenberg.springboot.example.security.controller.exception.EmailNotUniqueException;
+import nl.novi.stuivenberg.springboot.example.security.controller.exception.RoleNotFoundException;
+import nl.novi.stuivenberg.springboot.example.security.controller.exception.UsernameNotUniqueException;
 import nl.novi.stuivenberg.springboot.example.security.domain.ERole;
 import nl.novi.stuivenberg.springboot.example.security.domain.Role;
 import nl.novi.stuivenberg.springboot.example.security.domain.User;
@@ -16,21 +19,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class AuthorizationService {
-
-    private static final String ROLE_NOT_FOUND_ERROR = "Error: Role is not found.";
 
     private UserRepository userRepository;
     private PasswordEncoder encoder;
@@ -71,17 +71,13 @@ public class AuthorizationService {
      * @param signUpRequest de payload signup-request met gebruikersnaam en wachtwoord.
      * @return een HTTP response met daarin een succesbericht.
      */
-    public ResponseEntity<MessageResponse> registerUser(@Valid SignupRequest signUpRequest) {
+    public MessageResponse registerUser(@Valid SignupRequest signUpRequest) {
         if (Boolean.TRUE.equals(userRepository.existsByUsername(signUpRequest.getUsername()))) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Username is already taken!"));
+            throw new UsernameNotUniqueException();
         }
 
         if (Boolean.TRUE.equals(userRepository.existsByEmail(signUpRequest.getEmail()))) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Email is already in use!"));
+            throw new EmailNotUniqueException();
         }
 
         // Create new user's account
@@ -94,27 +90,26 @@ public class AuthorizationService {
 
         if (strRoles == null) {
             Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-                    .orElseThrow(() -> new RuntimeException(ROLE_NOT_FOUND_ERROR));
+                    .orElseThrow(RoleNotFoundException::new);
             roles.add(userRole);
         } else {
             strRoles.forEach(role -> {
                 switch (role) {
-                    case "admin":
+                    case "admin" -> {
                         Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
-                                .orElseThrow(() -> new RuntimeException(ROLE_NOT_FOUND_ERROR));
+                                .orElseThrow(RoleNotFoundException::new);
                         roles.add(adminRole);
-
-                        break;
-                    case "mod":
+                    }
+                    case "mod" -> {
                         Role modRole = roleRepository.findByName(ERole.ROLE_MODERATOR)
-                                .orElseThrow(() -> new RuntimeException(ROLE_NOT_FOUND_ERROR));
+                                .orElseThrow(RoleNotFoundException::new);
                         roles.add(modRole);
-
-                        break;
-                    default:
+                    }
+                    default -> {
                         Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-                                .orElseThrow(() -> new RuntimeException(ROLE_NOT_FOUND_ERROR));
+                                .orElseThrow(RoleNotFoundException::new);
                         roles.add(userRole);
+                    }
                 }
             });
         }
@@ -122,7 +117,7 @@ public class AuthorizationService {
         user.setRoles(roles);
         userRepository.save(user);
 
-        return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+        return new MessageResponse("User registered successfully!");
     }
 
     /**
@@ -148,8 +143,8 @@ public class AuthorizationService {
 
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         List<String> roles = userDetails.getAuthorities().stream()
-                .map(item -> item.getAuthority())
-                .collect(Collectors.toList());
+                .map(GrantedAuthority::getAuthority).
+                toList();
 
         return ResponseEntity.ok(new JwtResponse(jwt,
                 userDetails.getId(),
@@ -157,5 +152,4 @@ public class AuthorizationService {
                 userDetails.getEmail(),
                 roles));
     }
-
 }

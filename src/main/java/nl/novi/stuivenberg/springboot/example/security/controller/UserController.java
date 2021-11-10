@@ -1,5 +1,6 @@
 package nl.novi.stuivenberg.springboot.example.security.controller;
 
+import nl.novi.stuivenberg.springboot.example.security.payload.request.ImageRequest;
 import nl.novi.stuivenberg.springboot.example.security.payload.request.UpdateUserRequest;
 import nl.novi.stuivenberg.springboot.example.security.payload.response.ImageResponse;
 import nl.novi.stuivenberg.springboot.example.security.payload.response.UserResponse;
@@ -33,7 +34,7 @@ public class UserController {
     @PutMapping("")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<UserResponse> updateUser(@Valid @RequestBody UpdateUserRequest updateRequest) {
-        return ResponseEntity.ok().body(userService.updateUserById(updateRequest));
+        return ResponseEntity.ok().body(userService.updateUser(updateRequest));
     }
 
     @GetMapping("")
@@ -44,7 +45,7 @@ public class UserController {
 
     @PostMapping("/image")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<ImageResponse> addImageToProfile(String base64Img) {
+    public ResponseEntity<ImageResponse> addImageToProfile(ImageRequest base64Img) {
         return ResponseEntity.ok(userService.addImageToProfile(base64Img));
     }
 }

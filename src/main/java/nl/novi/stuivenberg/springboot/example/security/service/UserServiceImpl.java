@@ -1,6 +1,10 @@
 package nl.novi.stuivenberg.springboot.example.security.service;
 
+import nl.novi.stuivenberg.springboot.example.security.controller.exception.PasswordDoNotMatchException;
+import nl.novi.stuivenberg.springboot.example.security.controller.exception.UserNotFoundException;
+import nl.novi.stuivenberg.springboot.example.security.controller.exception.UsersNotFoundException;
 import nl.novi.stuivenberg.springboot.example.security.domain.User;
+import nl.novi.stuivenberg.springboot.example.security.payload.request.ImageRequest;
 import nl.novi.stuivenberg.springboot.example.security.payload.request.UpdateUserRequest;
 import nl.novi.stuivenberg.springboot.example.security.payload.response.ImageResponse;
 import nl.novi.stuivenberg.springboot.example.security.payload.response.UserResponse;
@@ -26,7 +30,7 @@ public class UserServiceImpl implements UserService {
 
         List<User> users = userRepository.findAll();
         if(users.isEmpty()) {
-            throw new RuntimeException("No users found");
+            throw new UsersNotFoundException();
         }
 
         List<UserResponse> userResponses = new ArrayList<>();
@@ -38,7 +42,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse updateUserById(UpdateUserRequest userRequest) {
+    public UserResponse updateUser(UpdateUserRequest userRequest) {
         String username =  getUsernameFromToken();
         Optional<User> userOptional = userRepository.findByUsername(username);
 
@@ -61,7 +65,7 @@ public class UserServiceImpl implements UserService {
             User savedUser = userRepository.save(updatedUser);
             return userToUserResponse(savedUser);
         }
-        throw new RuntimeException("User cannot be updated with provided data");
+        throw new UserNotFoundException();
     }
 
     @Override
@@ -75,20 +79,20 @@ public class UserServiceImpl implements UserService {
 
             return userToUserResponse(user);
         }
-        throw new RuntimeException("User not found");
+        throw new UserNotFoundException();
     }
 
     @Override
-    public ImageResponse addImageToProfile(String base64Image) {
+    public ImageResponse addImageToProfile(ImageRequest base64Image) {
         String username = getUsernameFromToken();
         Optional<User> optionalUser = userRepository.findByUsername(username);
         if(optionalUser.isPresent()) {
             User user = optionalUser.get();
-            user.setBase64ProfilePicture(base64Image);
+            user.setBase64ProfilePicture(base64Image.getBase64Image());
             User savedUser = userRepository.save(user);
             return userToImageResponse(savedUser);
         }
-        throw new RuntimeException("Could not find user!");
+        throw new UserNotFoundException();
     }
 
     private String getUsernameFromToken() {
@@ -99,7 +103,11 @@ public class UserServiceImpl implements UserService {
     }
 
     private boolean isNewPasswordValid(UpdateUserRequest updateUserRequest) {
-        return updateUserRequest.getPassword().equals(updateUserRequest.getRepeatedPassword());
+        if(updateUserRequest.getPassword().equals(updateUserRequest.getRepeatedPassword())) {
+            return true;
+        } else {
+            throw new PasswordDoNotMatchException();
+        }
     }
 
     @Autowired
@@ -130,5 +138,4 @@ public class UserServiceImpl implements UserService {
     private ImageResponse userToImageResponse(User user) {
         return new ImageResponse(user.getBase64ProfilePicture());
     }
-
 }

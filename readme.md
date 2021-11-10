@@ -13,12 +13,13 @@ De backend draait op een [Heroku](https://www.heroku.com/) server. Deze server w
 * [Rest endpoints](#rest-endpoints)
    * [Testen](#0.-test)
    * [Registreren](#1.-registeren)
-   * [Inloggen](#0.-inloggen)
+   * [Inloggen](#2.-inloggen)
    * [Gebruiker opvragen](#3.-gebruiker-opvragen)
    * [Gebruiker aanpassen](#4.-gebruiker-aanpassen)
-   * [Alle gebruikers opvragen [admin]](#5.-alle-gebruikers-opvragen-[admin])
-   * [Beveiligd endpoint [user]](#6.-beveiligd-endpoint-[user])
-   * [Beveiligd endpoint [admin]](#7.-beveiligd-endpoint-[admin])
+   * [Image uploaden](#5.-image-uploaden)
+   * [Alle gebruikers opvragen [admin]](#6.-alle-gebruikers-opvragen-[admin])
+   * [Beveiligd endpoint [user]](#7.-beveiligd-endpoint-[user])
+   * [Beveiligd endpoint [admin]](#8.-beveiligd-endpoint-[admin])
 * [Postman gebruiken](#rest-endpoint-benaderen-in-postman)
 
 
@@ -43,7 +44,7 @@ Alle rest-endpoints draaien op deze server: https://polar-lake-14365.herokuapp.c
 ```json
 {
    "Content-Type": "application/json",
-   "Authorization": "Bearer xxx.xxx.xxx",
+   "Authorization": "Bearer xxx.xxx.xxx"
 }
 ```
 
@@ -66,7 +67,7 @@ Het aanmaken van een nieuwe gebruiker (met user-rol) vereist de volgende informa
 }
 ```
 
-Het aanmaken van een nieuwe gebruiker (met admin-rol) vereist de volengende informatie:
+Het aanmaken van een nieuwe gebruiker (met admin-rol) vereist de volgende informatie:
 
 ```json
 {
@@ -87,7 +88,8 @@ Het is ook mogelijk een gebruiker aan te maken met twee rollen:
 
 De response bevat een succesmelding.
 
-_Let op_: er mogen géén additionele keys worden meegestuurd. Het e-mailadres moet altijd een e-mailadres zijn (met @ erin) anders geeft de backend een foutmelding.
+_Let op_: er mogen géén additionele keys worden meegestuurd. Het e-mailadres moet altijd een e-mailadres zijn
+(met @ erin) anders geeft de backend een foutmelding. Passwords moeten overeen komen en een minimale lengte van zes hebben. Dit geldt ook voor de gebruikersnaam.
 
 ### 2. Inloggen
 `POST /api/auth/signin`
@@ -97,7 +99,7 @@ Het inloggen van een bestaande gebruiker kan alleen als deze al geregistreerd is
 ```json
 {
    "username": "user",
-   "password" : "123456",
+   "password" : "123456"
 }
 ```
 
@@ -112,8 +114,7 @@ De response bevat een authorisatie-token (JWT) en alle gebruikersinformatie. Ond
         "ROLE_USER",
         "ROLE_MODERATOR"
     ],
-    "accessToken": "eyJhJIUzUxMiJ9.eyJzdWICJleQ0OTR9.AgP4vCsgw5TMj_AQAS-J8doHqADTA",
-    "tokenType": "Bearer"
+    "accessToken": "eyJhJIUzUxMiJ9.eyJzdWICJleQ0OTR9.AgP4vCsgw5TMj_AQAS-J8doHqADTA"
 }
 ```
 
@@ -123,7 +124,7 @@ De response bevat een authorisatie-token (JWT) en alle gebruikersinformatie. Ond
 Het opvragen van de gebruikersgegevens vereist een **token**. De response bevat alle informatie over de gebruiker zoals beschreven bij registratie.
 
 ### 4. Gebruiker aanpassen
-`POST /api/user/update`
+`PUT /api/user`
 
 Het is mogelijk om een gebruiker zijn eigen e-mail of wachtwoord aan te laten passen. Dit vereist, naast de gegevens zelf, ook een **token**. Wanneer één van de twee entiteiten aangepast moeten worden, moet de andere data alsnog worden meegestuurd. Wachtwoorden moeten altijd een minimale lengte van 6 tekens hebben.
 
@@ -131,22 +132,40 @@ Het is mogelijk om een gebruiker zijn eigen e-mail of wachtwoord aan te laten pa
 {
    "email" : "sjaak@sjaak.nl",
    "password": "123456",
-   "repeatedPassword": "123456",
+   "repeatedPassword": "123456"
 }
 ```
 
-### 5. Alle gebruikers opvragen [admin]
+Bij slagen wordt er een object geretourneerd met alle ingevoerde velden.
+Het is via deze call ook mogelijk om de `info` en `base64Image` properties aan te passen.
+
+### 5. Image uploaden
+`POST /api/user/image`
+Een gebruiker kan een afbeelding in de vorm van een base64 String aan zijn profiel toevoegen.
+```json
+{
+  "base64Image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=="
+}
+```
+
+Dit endpoint geeft hetzelfde JSON-object terug wanneer succesvol.
+
+### 6. Alle gebruikers opvragen [admin]
 `GET /api/admin/all`
 
 Dit rest-endpoint geeft een lijst van alle gebruikers terug, maar is alleen toegankelijk voor gebruikers met de admin-rol. Het opvragen van deze gegevens vereist een **token**.
 
-### 6. Beveiligd endpoint [user]
+### 7. Beveiligd endpoint [user]
 `GET /api/test/user`
 Alleen gebruikers met een user-rol kunnen dit endpoint benaderen. Het opvragen van deze gegevens vereist een **token**. De response bevat een enkele string: `"User Content."`
 
-### 7. Beveiligd endpoint [admin]
+### 8. Beveiligd endpoint [admin]
 `GET /api/test/admin`
 Alleen gebruikers met een admin-rol kunnen dit endpoint benaderen. Het opvragen van deze gegevens vereist een **token**. De response bevat een enkele string: `"Admin Board."` (IETS MEESTUREN?)
+
+### 9. Errors
+De backend kan verschillende errors gooien. We hebben ons best gedaan om deze af te vangen. Lees dan ook vooral de
+foutmelding.
 
 ## Restpoints benaderen in Postman
 Wanneer je een authorisation-token hebt ontvangen zal de backend bij alle beveiligde endpoints willen controleren wie de aanvrager is op basis van deze token. Dit zul je dus ook in Postman mee moeten geven.

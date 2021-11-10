@@ -1,15 +1,18 @@
 package nl.novi.stuivenberg.springboot.example.security.payload.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import nl.novi.stuivenberg.springboot.example.security.domain.Role;
 
 import java.util.Set;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserResponse {
 
     private long id;
     private String username;
     private String email;
     private String profilePicture;
+    private String info;
 
     private Set<Role> roles;
 
@@ -51,5 +54,13 @@ public class UserResponse {
 
     public void setProfilePicture(String profilePicture) {
         this.profilePicture = profilePicture;
+    }
+
+    public String getInfo() {
+        return info;
+    }
+
+    public void setInfo(String info) {
+        this.info = info;
     }
 }

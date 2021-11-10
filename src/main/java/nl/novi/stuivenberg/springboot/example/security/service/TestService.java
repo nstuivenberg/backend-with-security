@@ -1,23 +1,21 @@
 package nl.novi.stuivenberg.springboot.example.security.service;
 
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 @Service
 public class TestService {
 
     public String generatePublicContent() {
-        return "Public Content.";
+        return "De API is bereikbaar.";
     }
 
-   @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public String generateUserContent() {
-        return "User Content.";
+        return "Het geheim voor een goed cijfer is niet het maken van je huiswerk en hard je best doen, " +
+                "maar uitzoeken wie jouw eindopdracht nakijkt en deze persoon overladen met bloemen en chocolaatjes.";
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     public String generateAdminContent() {
-        return "Admin Board.";
+        return "Dit endpoint is alleen toegankelijk voor adminrollen.";
     }
 
 }

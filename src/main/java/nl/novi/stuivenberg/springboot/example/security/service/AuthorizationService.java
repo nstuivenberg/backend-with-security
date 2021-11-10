@@ -28,6 +28,7 @@ import javax.validation.Valid;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class AuthorizationService {
@@ -95,17 +96,17 @@ public class AuthorizationService {
         } else {
             strRoles.forEach(role -> {
                 switch (role) {
-                    case "admin" -> {
+                    case "admin": {
                         Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
                                 .orElseThrow(RoleNotFoundException::new);
                         roles.add(adminRole);
                     }
-                    case "mod" -> {
+                    case "mod": {
                         Role modRole = roleRepository.findByName(ERole.ROLE_MODERATOR)
                                 .orElseThrow(RoleNotFoundException::new);
                         roles.add(modRole);
                     }
-                    default -> {
+                    default: {
                         Role userRole = roleRepository.findByName(ERole.ROLE_USER)
                                 .orElseThrow(RoleNotFoundException::new);
                         roles.add(userRole);
@@ -143,8 +144,8 @@ public class AuthorizationService {
 
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         List<String> roles = userDetails.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority).
-                toList();
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
 
         return ResponseEntity.ok(new JwtResponse(jwt,
                 userDetails.getId(),
@@ -152,4 +153,5 @@ public class AuthorizationService {
                 userDetails.getEmail(),
                 roles));
     }
+
 }

@@ -1,17 +1,14 @@
 package nl.novi.stuivenberg.springboot.example.security.service;
 
 import nl.novi.stuivenberg.springboot.example.security.payload.request.UpdateUserRequest;
-
-import org.springframework.http.ResponseEntity;
+import nl.novi.stuivenberg.springboot.example.security.payload.response.UserResponse;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
 
-import javax.validation.Valid;
+import java.util.List;
 
 @Service
-@Validated
 public interface UserService {
-    ResponseEntity<?> getAllUsers();
-    ResponseEntity<?> updateUserById(@Valid UpdateUserRequest userRequest);
-    ResponseEntity<?> findUserByToken();
+    List<UserResponse> getAllUsers();
+    UserResponse updateUserById(UpdateUserRequest userRequest);
+    UserResponse findUserByToken();
 }

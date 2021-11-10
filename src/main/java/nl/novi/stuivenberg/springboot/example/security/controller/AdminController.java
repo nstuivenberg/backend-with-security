@@ -23,7 +23,7 @@ public class AdminController {
 
     @GetMapping("/all")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> findAllUsers() {
-        return userService.getAllUsers();
+    public ResponseEntity<Object> findAllUsers() {
+        return ResponseEntity.ok(userService.getAllUsers());
     }
 }

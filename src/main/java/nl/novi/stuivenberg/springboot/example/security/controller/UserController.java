@@ -1,6 +1,7 @@
 package nl.novi.stuivenberg.springboot.example.security.controller;
 
 import nl.novi.stuivenberg.springboot.example.security.payload.request.UpdateUserRequest;
+import nl.novi.stuivenberg.springboot.example.security.payload.response.UserResponse;
 import nl.novi.stuivenberg.springboot.example.security.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -27,14 +30,14 @@ public class UserController {
 
     @PostMapping("/update")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> updateUser(@RequestBody UpdateUserRequest updateRequest) {
-        return userService.updateUserById(updateRequest);
+    public ResponseEntity<UserResponse> updateUser(@Valid @RequestBody UpdateUserRequest updateRequest) {
+        return ResponseEntity.ok().body(userService.updateUserById(updateRequest));
     }
 
     @GetMapping("")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> findUserByToken() {
-        return userService.findUserByToken();
+    public ResponseEntity<UserResponse> findUserByToken() {
+        return ResponseEntity.ok(userService.findUserByToken());
     }
 
 }

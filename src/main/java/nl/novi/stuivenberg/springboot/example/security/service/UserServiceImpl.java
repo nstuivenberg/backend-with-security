@@ -2,15 +2,15 @@ package nl.novi.stuivenberg.springboot.example.security.service;
 
 import nl.novi.stuivenberg.springboot.example.security.domain.User;
 import nl.novi.stuivenberg.springboot.example.security.payload.request.UpdateUserRequest;
-import nl.novi.stuivenberg.springboot.example.security.payload.response.MessageResponse;
+import nl.novi.stuivenberg.springboot.example.security.payload.response.UserResponse;
 import nl.novi.stuivenberg.springboot.example.security.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,20 +21,24 @@ public class UserServiceImpl implements UserService {
     private PasswordEncoder encoder;
 
     @Override
-    public ResponseEntity<?> getAllUsers() {
+    public List<UserResponse> getAllUsers() {
 
         List<User> users = userRepository.findAll();
-
         if(users.isEmpty()) {
-            return ResponseEntity.badRequest().body(new MessageResponse("No Users found!"));
+            throw new RuntimeException("No users found");
         }
-        return ResponseEntity.ok(users);
+
+        List<UserResponse> userResponses = new ArrayList<>();
+        for(User user : users) {
+            userResponses.add(userToUserResponse(user));
+        }
+
+        return userResponses;
     }
 
     @Override
-    public ResponseEntity<?> updateUserById(UpdateUserRequest userRequest) {
+    public UserResponse updateUserById(UpdateUserRequest userRequest) {
         String username =  getUsernameFromToken();
-
         Optional<User> userOptional = userRepository.findByUsername(username);
 
         if(userOptional.isPresent()) {
@@ -46,22 +50,26 @@ public class UserServiceImpl implements UserService {
             if(userRequest.getEmail() != null && !userRequest.getEmail().isEmpty()) {
                 updatedUser.setEmail(userRequest.getEmail());
             }
-            return ResponseEntity.ok().body(userRepository.save(updatedUser));
-        }
 
-        return ResponseEntity.badRequest().body(new MessageResponse("User cannot be updated with provided data."));
+            User savedUser = userRepository.save(updatedUser);
+            return userToUserResponse(savedUser);
+        }
+        throw new RuntimeException("User cannot be updated with provided data");
     }
 
     @Override
-    public ResponseEntity<?> findUserByToken() {
+    public UserResponse findUserByToken() {
         String username = getUsernameFromToken();
 
         Optional<User> userOptional = userRepository.findByUsername(username);
 
         if(userOptional.isPresent()) {
-            return ResponseEntity.ok(userOptional.get());
+            User user = userOptional.get();
+
+            return userToUserResponse(user);
         }
-        return ResponseEntity.badRequest().body(new MessageResponse("User not found"));
+
+        throw new RuntimeException("User not found");
     }
 
     private String getUsernameFromToken() {
@@ -83,6 +91,17 @@ public class UserServiceImpl implements UserService {
     @Autowired
     public void setEncoder(PasswordEncoder encoder) {
         this.encoder = encoder;
+    }
+
+    private UserResponse userToUserResponse(User user) {
+        UserResponse userResponse = new UserResponse();
+
+        userResponse.setId(user.getId());
+        userResponse.setUsername(user.getUsername());
+        userResponse.setEmail(user.getEmail());
+        userResponse.setRoles(user.getRoles());
+
+        return userResponse;
     }
 
 }

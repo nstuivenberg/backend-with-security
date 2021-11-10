@@ -9,6 +9,7 @@ public class UserResponse {
     private long id;
     private String username;
     private String email;
+    private String profilePicture;
 
     private Set<Role> roles;
 
@@ -42,5 +43,13 @@ public class UserResponse {
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
+    }
+
+    public String getProfilePicture() {
+        return profilePicture;
+    }
+
+    public void setProfilePicture(String profilePicture) {
+        this.profilePicture = profilePicture;
     }
 }

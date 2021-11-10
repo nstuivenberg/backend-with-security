@@ -2,6 +2,7 @@ package nl.novi.stuivenberg.springboot.example.security.service;
 
 import nl.novi.stuivenberg.springboot.example.security.domain.User;
 import nl.novi.stuivenberg.springboot.example.security.payload.request.UpdateUserRequest;
+import nl.novi.stuivenberg.springboot.example.security.payload.response.ImageResponse;
 import nl.novi.stuivenberg.springboot.example.security.payload.response.UserResponse;
 import nl.novi.stuivenberg.springboot.example.security.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,8 +69,20 @@ public class UserServiceImpl implements UserService {
 
             return userToUserResponse(user);
         }
-
         throw new RuntimeException("User not found");
+    }
+
+    @Override
+    public ImageResponse addImageToProfile(String base64Image) {
+        String username = getUsernameFromToken();
+        var optionalUser = userRepository.findByUsername(username);
+        if(optionalUser.isPresent()) {
+            var user = optionalUser.get();
+            user.setBase64ProfilePicture(base64Image);
+            var savedUser = userRepository.save(user);
+            return userToImageResponse(savedUser);
+        }
+        throw new RuntimeException("Could not find user!");
     }
 
     private String getUsernameFromToken() {
@@ -100,8 +113,14 @@ public class UserServiceImpl implements UserService {
         userResponse.setUsername(user.getUsername());
         userResponse.setEmail(user.getEmail());
         userResponse.setRoles(user.getRoles());
-
+        if(user.getBase64ProfilePicture()!= null && !user.getBase64ProfilePicture().isEmpty()) {
+            userResponse.setProfilePicture(user.getBase64ProfilePicture());
+        }
         return userResponse;
+    }
+
+    private ImageResponse userToImageResponse(User user) {
+        return new ImageResponse(user.getBase64ProfilePicture());
     }
 
 }

@@ -122,6 +122,9 @@ public class UserServiceImpl implements UserService {
         if(user.getBase64ProfilePicture()!= null && !user.getBase64ProfilePicture().isEmpty()) {
             userResponse.setProfilePicture(user.getBase64ProfilePicture());
         }
+        if(user.getInfo() != null && !user.getInfo().isEmpty()) {
+            userResponse.setInfo(user.getInfo());
+        }
         return userResponse;
     }
     private ImageResponse userToImageResponse(User user) {

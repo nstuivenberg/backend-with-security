@@ -91,26 +91,27 @@ public class AuthorizationService {
 
         if (strRoles == null) {
             Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-                    .orElseThrow(RoleNotFoundException::new);
+                    .orElseThrow(() -> new RoleNotFoundException());
             roles.add(userRole);
         } else {
             strRoles.forEach(role -> {
                 switch (role) {
-                    case "admin": {
+                    case "admin":
                         Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
-                                .orElseThrow(RoleNotFoundException::new);
+                                .orElseThrow(() -> new RoleNotFoundException());
                         roles.add(adminRole);
-                    }
-                    case "mod": {
+
+                        break;
+                    case "mod":
                         Role modRole = roleRepository.findByName(ERole.ROLE_MODERATOR)
-                                .orElseThrow(RoleNotFoundException::new);
+                                .orElseThrow(() -> new RoleNotFoundException());
                         roles.add(modRole);
-                    }
-                    default: {
+
+                        break;
+                    default:
                         Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-                                .orElseThrow(RoleNotFoundException::new);
+                                .orElseThrow(() -> new RoleNotFoundException());
                         roles.add(userRole);
-                    }
                 }
             });
         }

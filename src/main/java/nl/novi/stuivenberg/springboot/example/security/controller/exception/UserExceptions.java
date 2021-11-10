@@ -34,7 +34,7 @@ public class UserExceptions {
         return new ResponseEntity<>("This username is already in use", HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(value = UsernameNotUniqueException.class)
+    @ExceptionHandler(value = EmailNotUniqueException.class)
     public ResponseEntity<Object> generateEmailNotUniqueExceptionMessage() {
         return new ResponseEntity<>("This email is already in use", HttpStatus.BAD_REQUEST);
     }

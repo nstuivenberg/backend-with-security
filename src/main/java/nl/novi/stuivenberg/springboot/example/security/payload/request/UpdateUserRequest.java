@@ -15,6 +15,9 @@ public class UpdateUserRequest {
     @Size(min = 6, max = 40)
     private String repeatedPassword;
 
+    private String base64Image;
+    private String info;
+
     public String getEmail() {
         return email;
     }
@@ -37,5 +40,21 @@ public class UpdateUserRequest {
 
     public void setRepeatedPassword(String repeatedPassword) {
         this.repeatedPassword = repeatedPassword;
+    }
+
+    public String getBase64Image() {
+        return base64Image;
+    }
+
+    public void setBase64Image(String base64Image) {
+        this.base64Image = base64Image;
+    }
+
+    public String getInfo() {
+        return info;
+    }
+
+    public void setInfo(String info) {
+        this.info = info;
     }
 }

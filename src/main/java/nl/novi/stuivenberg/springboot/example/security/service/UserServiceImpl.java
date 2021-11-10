@@ -44,14 +44,20 @@ public class UserServiceImpl implements UserService {
 
         if(userOptional.isPresent()) {
             User updatedUser = userOptional.get();
-            if(!userRequest.getPassword().isEmpty() && !userRequest.getRepeatedPassword().isEmpty()
+            if(userRequest.getPassword() != null && userRequest.getRepeatedPassword() != null &&
+                    !userRequest.getPassword().isEmpty() && !userRequest.getRepeatedPassword().isEmpty()
                     && isNewPasswordValid(userRequest)) {
                 updatedUser.setPassword(encoder.encode(userRequest.getPassword()));
             }
             if(userRequest.getEmail() != null && !userRequest.getEmail().isEmpty()) {
                 updatedUser.setEmail(userRequest.getEmail());
             }
-
+            if(userRequest.getBase64Image() != null && userRequest.getBase64Image().isEmpty()) {
+                updatedUser.setBase64ProfilePicture(userRequest.getBase64Image());
+            }
+            if(userRequest.getInfo() != null && userRequest.getInfo().isEmpty()) {
+                updatedUser.setInfo(updatedUser.getInfo());
+            }
             User savedUser = userRepository.save(updatedUser);
             return userToUserResponse(savedUser);
         }
@@ -75,11 +81,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public ImageResponse addImageToProfile(String base64Image) {
         String username = getUsernameFromToken();
-        var optionalUser = userRepository.findByUsername(username);
+        Optional<User> optionalUser = userRepository.findByUsername(username);
         if(optionalUser.isPresent()) {
-            var user = optionalUser.get();
+            User user = optionalUser.get();
             user.setBase64ProfilePicture(base64Image);
-            var savedUser = userRepository.save(user);
+            User savedUser = userRepository.save(user);
             return userToImageResponse(savedUser);
         }
         throw new RuntimeException("Could not find user!");
@@ -118,7 +124,6 @@ public class UserServiceImpl implements UserService {
         }
         return userResponse;
     }
-
     private ImageResponse userToImageResponse(User user) {
         return new ImageResponse(user.getBase64ProfilePicture());
     }

@@ -35,6 +35,9 @@ public class User {
     @Column(columnDefinition = "TEXT")
     private String base64ProfilePicture;
 
+    @Column(columnDefinition = "TEXT")
+    private String info;
+
     @ManyToMany
     @JoinTable (name = "user_role",
     joinColumns = @JoinColumn(name = "user_id"),
@@ -97,5 +100,13 @@ public class User {
 
     public void setBase64ProfilePicture(String base64ProfilePicture) {
         this.base64ProfilePicture = base64ProfilePicture;
+    }
+
+    public String getInfo() {
+        return info;
+    }
+
+    public void setInfo(String info) {
+        this.info = info;
     }
 }

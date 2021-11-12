@@ -74,7 +74,7 @@ Het aanmaken van een nieuwe gebruiker vereist de volgende informatie:
 
 De response bevat bij success een succesmelding.
 
-##### Optionele velden
+#### Optionele velden
 Het is toegestaan om een string mee te sturen onder de `info` key, zodat je hier additionele informatie over de gebruiker in kunt opslaan:
 
 ```json
@@ -87,7 +87,7 @@ Het is toegestaan om een string mee te sturen onder de `info` key, zodat je hier
 }
 ```
 
-##### Rollen
+#### Rollen
 Wanneer je een gebruiker met admin-rol wil aanmaken, verander je de rol als volgt: `"role": ["admin"]`. Het is ook mogelijk een gebruiker aan te maken met _twee_ rollen:
 
 ```json

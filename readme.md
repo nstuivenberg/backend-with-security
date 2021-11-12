@@ -42,7 +42,7 @@ In de situatie dat een admin zowel gebruikers-rechten heeft als admin-rechten, k
 Alle rest-endpoints draaien op deze server:  https://frontend-educational-backend.herokuapp.com/. Dit is de basis-uri. Alle voorbeeld-data betreffende de endpoints zijn in JSON format weergegeven. Wanneer er wordt vermeld dat er een token vereist is, betekent dit dat er een `Bearer` + `token` _header_ moet worden meegestuurd met het request:
 
 ```json
-{
+headers: {
    "Content-Type": "application/json",
    "Authorization": "Bearer xxx.xxx.xxx"
 }
@@ -66,19 +66,7 @@ Het aanmaken van een nieuwe gebruiker (met user-rol) vereist de volgende informa
    "role": ["user"]
 }
 ```
-
-Het aanmaken van een nieuwe gebruiker (met admin-rol) vereist de volgende informatie:
-
-```json
-{
-   "username": "klaas",
-   "email" : "klaas@novi.nl",
-   "password" : "123456",
-   "role": ["admin"]
-}
-```
-
-Het is ook mogelijk een gebruiker aan te maken met twee rollen:
+Wanneer je een gebruiker met admin-rol wil aanmaken, vereist dit dezelfde informatie. Het enige verschil is het aanpassen van de rol: `"role": ["admin"]`. Het is ook mogelijk een gebruiker aan te maken met _twee_ rollen:
 
 ```json
 {

@@ -3,7 +3,7 @@
 ## Beschrijving
 Deze backend is gebouwd door NOVI en mag alleen worden gebruikt voor opleidings-doeleinden.
 
-Wanneer studenten de Frontend leerlijn volgen en een backend nodig hebben voor hun eindopdracht, kunnen zij ervoor kiezen om de NOVI backend te gebruiken. Deze backend ondersteunt alleen het registeren, inloggen en aanpassen van gebuikers. Het is niet mogelijk om andere informatie (naast `email`, `gebruikersnaam`, `wachtwoord` en `role`) op te slaan in deze database. _Let op_: de database met gebruikers wordt automatisch binnen 30 minuten geleegd.
+Wanneer studenten de Frontend leerlijn volgen en een backend nodig hebben voor hun eindopdracht, kunnen zij ervoor kiezen om de NOVI backend te gebruiken. Deze backend ondersteunt alleen het registeren, inloggen en aanpassen van gebuikers. Het is niet mogelijk om andere informatie (naast email-adres, gebruikersnaam, wachtwoord, info, profielfoto en rol) op te slaan in deze database. _Let op_: de database met gebruikers wordt automatisch binnen 30 minuten geleegd.
 
 De backend draait op een [Heroku](https://www.heroku.com/) server. Deze server wordt automatisch inactief wanneer er een tijdje geen requests gemaakt worden. De **eerste** request die de server weer uit de 'slaapstand' haalt zal daarom maximaal 30 seconden op zich kunnen laten wachten. Daarna zal de responsetijd normaal zijn. Voer daarom altijd eerst een test-request uit.
 
@@ -39,7 +39,7 @@ HTTP 401 Unauthorized
 In de situatie dat een admin zowel gebruikers-rechten heeft als admin-rechten, krijgt deze dus twee rollen toegewezen. 
 
 ## Rest endpoints
-Alle rest-endpoints draaien op deze server:  https://frontend-educational-backend.herokuapp.com/. Dit is de basis-uri. Alle voorbeeld-data betreffende de endpoints zijn in JSON format weergegeven. Wanneer er wordt vermeld dat er een token vereist is, betekent dit dat er een `Bearer` + `token` _header_ moet worden meegestuurd met het request:
+Alle rest-endpoints draaien op deze server: https://frontend-educational-backend.herokuapp.com/. Dit is de basis-uri. Alle voorbeeld-data betreffende de endpoints zijn in JSON format weergegeven. Wanneer er wordt vermeld dat er een token vereist is, betekent dit dat er een `Bearer` + `token` _header_ moet worden meegestuurd met het request. Wanneer je axios gebruikt, is dit dus het config-object.
 
 ```json
 headers: {
@@ -67,12 +67,12 @@ Het aanmaken van een nieuwe gebruiker vereist de volgende informatie:
 }
 ```
 
-De response bevat een succesmelding.
-
 **Let op:**
 1. Het emailadres moet daadwerkelijk een `@` bevatten
 2. Het wachtwoord en gebruikersnaam moeten minimaal 6 tekens bevatten
 3. Wanneer je een gebruiker probeert te registreren met een username die al bestaat, krijg je een foutmelding. De details over deze foutmelding vindt je in `e.response`.
+
+De response bevat bij success een succesmelding.
 
 ##### Optionele velden
 Het is toegestaan om een string mee te sturen onder de `info` key, zodat je hier additionele informatie over de gebruiker in kunt opslaan:

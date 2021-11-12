@@ -51,12 +51,12 @@ headers: {
 ### 0. Test
 `GET /api/test/all`
 
-Dit endpoint is vrij toegankelijk en is niet afgeschermd. Het is daarom een handig endpoint om te testen of het verbinden met de backend werkt. De response bevat een enkele string: `"Public Content."`
+Dit endpoint is vrij toegankelijk en is niet afgeschermd. Het is daarom een handig endpoint om te testen of het verbinden met de backend werkt. De response bevat een enkele string: `"De API is bereikbaar."`
 
 ### 1. Registreren
 `POST /api/auth/signup`
 
-Het aanmaken van een nieuwe gebruiker (met user-rol) vereist de volgende informatie:
+Het aanmaken van een nieuwe gebruiker vereist de volgende informatie:
 
 ```json
 {
@@ -66,18 +66,35 @@ Het aanmaken van een nieuwe gebruiker (met user-rol) vereist de volgende informa
    "role": ["user"]
 }
 ```
-Wanneer je een gebruiker met admin-rol wil aanmaken, vereist dit dezelfde informatie. Het enige verschil is het aanpassen van de rol: `"role": ["admin"]`. Het is ook mogelijk een gebruiker aan te maken met _twee_ rollen:
+
+De response bevat een succesmelding.
+
+**Let op:**
+1. Het emailadres moet daadwerkelijk een `@` bevatten
+2. Het wachtwoord en gebruikersnaam moeten minimaal 6 tekens bevatten
+3. Wanneer je een gebruiker probeert te registreren met een username die al bestaat, krijg je een foutmelding. De details over deze foutmelding vindt je in `e.response`.
+
+##### Optionele velden
+Het is toegestaan om een string mee te sturen onder de `info` key, zodat je hier additionele informatie over de gebruiker in kunt opslaan:
+
+```json
+{
+   "username": "piet",
+   "email" : "piet@novi.nl",
+   "password" : "123456",
+   "info": "Ik woon in Utrecht",
+   "role": ["user"]
+}
+```
+
+##### Rollen
+Wanneer je een gebruiker met admin-rol wil aanmaken, verander je de rol als volgt: `"role": ["admin"]`. Het is ook mogelijk een gebruiker aan te maken met _twee_ rollen:
 
 ```json
 {
    "role": ["user", "admin"]
 }
 ```
-
-De response bevat een succesmelding.
-
-_Let op_: er mogen géén additionele keys worden meegestuurd. Het e-mailadres moet altijd een e-mailadres zijn
-(met @ erin) anders geeft de backend een foutmelding. Passwords moeten overeen komen en een minimale lengte van zes hebben. Dit geldt ook voor de gebruikersnaam.
 
 ### 2. Inloggen
 `POST /api/auth/signin`
@@ -111,32 +128,40 @@ De response bevat een authorisatie-token (JWT) en alle gebruikersinformatie. Ond
 
 Het opvragen van de gebruikersgegevens vereist een **token**. De response bevat alle informatie over de gebruiker zoals beschreven bij registratie.
 
-### 4. Gebruiker aanpassen
-`PUT /api/user`
-
-Het is mogelijk om een gebruiker zijn eigen e-mail of wachtwoord aan te laten passen. Dit vereist, naast de gegevens zelf, ook een **token**. Wanneer één van de twee entiteiten aangepast moeten worden, moet de andere data alsnog worden meegestuurd. Wachtwoorden moeten altijd een minimale lengte van 6 tekens hebben.
-
-```json
-{
-   "email" : "sjaak@sjaak.nl",
-   "password": "123456",
-   "repeatedPassword": "123456"
-}
-```
-
-Bij slagen wordt er een object geretourneerd met alle ingevoerde velden.
-Het is via deze call ook mogelijk om de `info` en `base64Image` properties aan te passen.
-
-### 5. Image uploaden
+### 4. Profielfoto uploaden
 `POST /api/user/image`
-Een gebruiker kan een afbeelding in de vorm van een base64 String aan zijn profiel toevoegen.
+
+Een gebruiker kan een profielfoto aan zijn profiel toevoegen. Dit vereist een **token**. De afbeelding moet worden aangeleverd in de vorm van een base64-string: 
+
 ```json
 {
   "base64Image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=="
 }
 ```
 
-Dit endpoint geeft hetzelfde JSON-object terug wanneer succesvol.
+Wanneer dit succesvol is, wordt het volledige gebruikers-object geretourneerd met alle huidige informatie over de gebruiker. 
+
+### 5. Gebruiker aanpassen
+`PUT /api/user`
+
+Het is mogelijk om een gebruiker zijn eigen e-mail, wachtwoord, profielfoto of informatie aan te laten passen. Dit vereist, naast de gegevens zelf, ook een **token**. Het aanpassen van het emailadres doe je als volgt:
+
+```json
+{
+   "email" : "sjaak@sjaak.nl",
+}
+```
+
+Het aanpassen van het wachtwoord doe je als volgt:
+```json
+{
+   "password": "123456",
+   "repeatedPassword": "123456"
+}
+```
+
+Wanneer dit succesvol is, wordt het volledige gebruikers-object geretourneerd met alle huidige informatie over de gebruiker. 
+
 
 ### 6. Alle gebruikers opvragen [admin]
 `GET /api/admin/all`
@@ -145,11 +170,12 @@ Dit rest-endpoint geeft een lijst van alle gebruikers terug, maar is alleen toeg
 
 ### 7. Beveiligd endpoint [user]
 `GET /api/test/user`
-Alleen gebruikers met een user-rol kunnen dit endpoint benaderen. Het opvragen van deze gegevens vereist een **token**. De response bevat een enkele string: `"User Content."`
+
+Alleen gebruikers met een user-rol kunnen dit endpoint benaderen. Het opvragen van deze gegevens vereist een **token**. De response bevat een string.
 
 ### 8. Beveiligd endpoint [admin]
 `GET /api/test/admin`
-Alleen gebruikers met een admin-rol kunnen dit endpoint benaderen. Het opvragen van deze gegevens vereist een **token**. De response bevat een enkele string: `"Admin Board."` (IETS MEESTUREN?)
+Alleen gebruikers met een admin-rol kunnen dit endpoint benaderen. Het opvragen van deze gegevens vereist een **token**. De response bevat een enkele string: `"Admin Board."`.
 
 ### 9. Errors
 De backend kan verschillende errors gooien. We hebben ons best gedaan om deze af te vangen. Lees dan ook vooral de

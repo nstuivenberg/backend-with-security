@@ -56,10 +56,10 @@ public class UserServiceImpl implements UserService {
             if(userRequest.getEmail() != null && !userRequest.getEmail().isEmpty()) {
                 updatedUser.setEmail(userRequest.getEmail());
             }
-            if(userRequest.getBase64Image() != null && userRequest.getBase64Image().isEmpty()) {
+            if(userRequest.getBase64Image() != null && !userRequest.getBase64Image().isEmpty()) {
                 updatedUser.setBase64ProfilePicture(userRequest.getBase64Image());
             }
-            if(userRequest.getInfo() != null && userRequest.getInfo().isEmpty()) {
+            if(userRequest.getInfo() != null && !userRequest.getInfo().isEmpty()) {
                 updatedUser.setInfo(updatedUser.getInfo());
             }
             User savedUser = userRepository.save(updatedUser);

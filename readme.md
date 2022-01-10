@@ -135,7 +135,7 @@ Een gebruiker kan een profielfoto aan zijn profiel toevoegen. Dit vereist een **
 
 ```json
 {
-  "base64Image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=="
+  "base64Image":            "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=="
 }
 ```
 
@@ -178,8 +178,7 @@ Alleen gebruikers met een user-rol kunnen dit endpoint benaderen. Het opvragen v
 Alleen gebruikers met een admin-rol kunnen dit endpoint benaderen. Het opvragen van deze gegevens vereist een **token**. De response bevat een enkele string: `"Admin Board."`.
 
 ### 9. Errors
-De backend kan verschillende errors gooien. We hebben ons best gedaan om deze af te vangen. Lees dan ook vooral de
-foutmelding.
+De backend kan verschillende errors teruggeven. We hebben ons best gedaan om deze allemaal af te vangen. Lees dan ook vooral de foutmelding in `e.response`.
 
 ## Restpoints benaderen in Postman
 Wanneer je een authorisation-token hebt ontvangen zal de backend bij alle beveiligde endpoints willen controleren wie de aanvrager is op basis van deze token. Dit zul je dus ook in Postman mee moeten geven.

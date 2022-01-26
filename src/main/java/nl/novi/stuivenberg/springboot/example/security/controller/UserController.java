@@ -45,7 +45,7 @@ public class UserController {
 
     @PostMapping("/image")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<ImageResponse> addImageToProfile(ImageRequest base64Img) {
+    public ResponseEntity<ImageResponse> addImageToProfile(@RequestBody ImageRequest base64Img) {
         return ResponseEntity.ok(userService.addImageToProfile(base64Img));
     }
 }
